@@ -4,11 +4,13 @@ pipeline {
             label 'maven'
         }
     }
-
+environment {
+    PATH = "/tmp/apache-maven-3.9.5/bin:$PATH"
+}
     stages {
-        stage('Clone Code') {
+        stage('Build code') {
             steps {
-                git branch: 'main', url: 'https://github.com/younes-364/twittertrend'
+                sh 'mvn clean deploy'
             }
         }
     }
