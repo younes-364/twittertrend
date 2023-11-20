@@ -10,7 +10,7 @@ environment {
     stages {
         stage('Build code') {
             steps {
-                sh 'mvn clean deploy'
+                sh 'mvn clean deploy -Dmaven.test.skip=true'
             }
         }
 
@@ -24,6 +24,11 @@ environment {
             }
             }
         }
-
+        stage('Test') {
+            steps {
+                echo '--------------------------------------------'
+                sh 'surefire-report:report'
+            }
+        }
     }
 }
