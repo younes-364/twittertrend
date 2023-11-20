@@ -27,7 +27,7 @@ environment {
         stage('Test') {
             steps {
                 echo '--------------------------------------------'
-                sh 'surefire-report:report'
+                sh 'mvn surefire-report:report'
             }
         }
     }
