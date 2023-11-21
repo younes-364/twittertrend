@@ -1,4 +1,5 @@
 def registry = 'https://rushrx.jfrog.io'
+def imageName = 'rushrx.jfrog.io/ttrend-docker/ttrendapp'
 pipeline {
     agent {
         node {
@@ -10,6 +11,7 @@ environment {
     PATH = "/tmp/apache-maven-3.9.5/bin:$PATH"
 }
     stages {
+        
         stage('Build code') {
             steps {
                 sh 'mvn clean deploy -Dmaven.test.skip=true'
@@ -26,12 +28,14 @@ environment {
             }
             }
         }
+
         stage('Test') {
             steps {
                 echo '--------------------------------------------'
                 sh 'mvn surefire-report:report'
             }
         }
+
         stage("Quality Gate"){
             steps {
                 script {
@@ -44,6 +48,7 @@ environment {
                 }
             }
         }
+
         stage("Jar Publish") {
             steps {
                 script {
@@ -66,5 +71,31 @@ environment {
                 }
             }
         }
+
+        stage(" Docker Build ") {
+            steps {
+                script {
+                    app = docker.build(imageName+":"+version)
+                }
+            }
+        }
+
+        stage (" Docker Publish "){
+            steps {
+                script { 
+                    docker.withRegistry(registry, 'jfrog-cred'){
+                        app.push()
+                    } 
+                }
+            }
+        }
+
+        stage(" Deploy ") {
+            steps {
+                script {
+                    sh 'helm install twittertrend-2.0.2 ttrend'
+                }
+            }
+        } 
     }
 }
