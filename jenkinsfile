@@ -1,5 +1,5 @@
 def registry = 'https://rushrx.jfrog.io'
-def imageName = 'rushrx.jfrog.io/ttrend-docker/ttrendapp'
+def imageName = 'rushrx.jfrog.io/dockerrepo-docker-local/ttrendapp'
 def version   = '2.0.2'
 pipeline {
     agent {
